@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { pipe } from 'rxjs';
 
 import { ItemTypes } from '../actions/type';
 
@@ -100,3 +101,21 @@ export const createNamedReducer = (reducerName, reducer) => {
 		return reducer(state, action);
 	}
 }
+
+export const getPending = state => state.pending;
+export const getItems = state => state.items;
+export const getResponse = state => state.response;
+
+export const getById = itemsState => itemsState.byId;
+export const getAllIds = itemsState => itemsState.allIds;
+export const getItemsById = state => pipe( getItems, getById )(state);
+export const getItemsAllIds = state => pipe( getItems, getAllIds )(state);
+
+const itemsToArray = itemsState => {
+	const byId = getById(itemsState);
+	const allIds = getAllIds(itemsState);
+
+	return allIds.map(id => byId[id]);
+}
+
+export const getAllItems = state => pipe( getItems, itemsToArray )(state);

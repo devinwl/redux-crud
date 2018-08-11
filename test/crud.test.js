@@ -1,6 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-
 import { ItemTypes } from '../actions/type';
 import { 
 	fetchItem,
@@ -11,7 +8,16 @@ import {
 	fetchAllSuccess,
 	fetchAllError
 } from '../actions/crud';
-import { reducer, createNamedReducer } from '../reducers/crud';
+import {
+	reducer,
+	createNamedReducer,
+	getPending,
+	getResponse,
+	getItems,
+	getItemsById,
+	getItemsAllIds,
+	getAllItems
+} from '../reducers/crud';
 
 const initialState = {
 	pending: false,
@@ -205,5 +211,57 @@ it('handles a fetch all error action', () => {
 			pending: false,
 			response: 'error'
 		}
+	);
+});
+
+it('returns the pending state', () => {
+	const state = initialState;
+	expect(
+		getPending(state)
+	)
+	.toEqual(state.pending);
+});
+
+it('returns the response state', () => {
+	const state = initialState;
+	expect(
+		getResponse(state)
+	)
+	.toEqual(state.response);
+});
+
+it('returns the items state', () => {
+	const state = initialState;
+	expect(
+		getItems(state)
+	)
+	.toEqual(state.items);
+});
+
+it('returns the items->byId state', () => {
+	const state = initialState;
+	expect(
+		getItemsById(state)
+	)
+	.toEqual(state.items.byId);
+});
+
+it('returns the items->allIds state', () => {
+	const state = initialState;
+	expect(
+		getItemsAllIds(state)
+	)
+	.toEqual(state.items.allIds);
+});
+
+it('returns items as an array', () => {
+	const item = { id: '123', value: 'test' };
+	const action = fetchItemSuccess(item);
+	const state = reducer(initialState, action);
+
+	expect(
+		getAllItems(state)
+	).toEqual(
+		[ item ]
 	);
 });
